@@ -1,0 +1,46 @@
+require barebox.inc
+inherit git_auth
+
+SRC_URI_append = " \
+    file://0001-Makefile-add-TARGETCC.patch \
+"
+
+FILESEXTRAPATHS_prepend := "${THISDIR}/${PN}/features:"
+FILESEXTRAPATHS_prepend := "${THISDIR}/env-2015.09.0-phy4:"
+
+SRC_URI = "git://github.com/${USER}/ccu-bosotloader.git;branch=v2015.09.0-phy"
+
+SRC_URI_append = " \
+    file://commonenv \
+    file://boardenv \
+    file://machineenv \
+    file://targettools.cfg \
+"
+S = "${WORKDIR}/git"
+
+PR = "${INC_PR}.0"
+
+# NOTE: Keep version in filename in sync with commit id and barebox-ipl!
+
+# SRCREV is the commit id of the phy4 tag in ccu-bootloader rep
+SRCREV = "0f034be57e539212af84dfd53e70faadac40e6f3"
+
+COMPATIBLE_MACHINE = "beagleboneblack-1"
+COMPATIBLE_MACHINE .= "|phyboard-maia-am335x-1"
+COMPATIBLE_MACHINE .= "|phyboard-maia-am335x-2"
+COMPATIBLE_MACHINE .= "|phyboard-maia-am335x-3"
+COMPATIBLE_MACHINE .= "|phyboard-wega-am335x-1"
+COMPATIBLE_MACHINE .= "|phyboard-wega-am335x-2"
+COMPATIBLE_MACHINE .= "|phyboard-wega-am335x-3"
+COMPATIBLE_MACHINE .= "|phyboard-wega-am335x-4"
+COMPATIBLE_MACHINE .= "|phycore-am335x-1"
+COMPATIBLE_MACHINE .= "|phycore-am335x-2"
+COMPATIBLE_MACHINE .= "|phycore-am335x-3"
+COMPATIBLE_MACHINE .= "|phycore-am335x-4"
+COMPATIBLE_MACHINE .= "|phycore-am335x-5"
+COMPATIBLE_MACHINE .= "|phycore-am335x-6"
+COMPATIBLE_MACHINE .= "|phycore-am335x-7"
+COMPATIBLE_MACHINE .= "|phyflex-am335x-1"
+COMPATIBLE_MACHINE .= "|phyflex-am335x-2"
+COMPATIBLE_MACHINE .= "|phyflex-am335x-3"
+COMPATIBLE_MACHINE .= "|phyflex-am335x-4"

@@ -1,0 +1,100 @@
+DISTRO = "eevo"
+DISTRO_NAME = "EEVO (Eevo Example Distribution)"
+DISTRO_VERSION ??= "UNASSIGNED"
+# DISTRO_VERSION_mx6 = "i.MX6-PD15.3-rc"
+DISTRO_VERSION_ti33x = "Eevo 2000"
+DISTRO_CODENAME = "fido"
+SDK_VENDOR = "-eevosdk"
+SDK_VERSION := "${@'${DISTRO_VERSION}'.replace('snapshot-${DATE}','snapshot')}"
+
+TARGET_VENDOR = "-eevo"
+
+DISTRO_FEATURES_YOGURT = "alsa bluetooth ext2 ipv4 ipv6 largefile nfs pam pci smbfs systemd usbgadget usbhost vfat wifi xattr opengl pulseaudio"
+DISTRO_FEATURES = "${DISTRO_FEATURES_LIBC} ${DISTRO_FEATURES_YOGURT}"
+
+SDK_NAME = "${DISTRO}-${TCLIBC}-${SDK_ARCH}-${IMAGE_BASENAME}-${TUNE_PKGARCH}"
+SDKPATH = "/opt/${DISTRO}/${SDK_VERSION}"
+
+POKYQEMUDEPS = "${@bb.utils.contains("INCOMPATIBLE_LICENSE", "GPLv3", "", "packagegroup-core-device-devel",d)}"
+DISTRO_EXTRA_RDEPENDS_append_qemuarm = " ${POKYQEMUDEPS}"
+DISTRO_EXTRA_RDEPENDS_append_qemumips = " ${POKYQEMUDEPS}"
+DISTRO_EXTRA_RDEPENDS_append_qemuppc = " ${POKYQEMUDEPS}"
+DISTRO_EXTRA_RDEPENDS_append_qemux86 = " ${POKYQEMUDEPS}"
+DISTRO_EXTRA_RDEPENDS_append_qemux86-64 = " ${POKYQEMUDEPS}"
+
+# Can be "glibc", "musl" or "uclibc"
+TCLIBC ?= "glibc"
+include include/eevo-${TCLIBC}.inc
+
+QEMU_TARGETS ?= "arm i386 mips mipsel ppc x86_64"
+# Other QEMU_TARGETS "mips64 mips64el sh4"
+
+# The CONNECTIVITY_CHECK_URI's are used to test whether we can succesfully
+# fetch from the network (and warn you if not). To disable the test set
+# the variable to be empty.
+# Git example url: git://git.yoctoproject.org/yocto-firewall-test;protocol=git;rev=HEAD
+
+CONNECTIVITY_CHECK_URIS ?= " \
+            https://eula-downloads.yoctoproject.org/index.php \
+            http://bugzilla.yoctoproject.org/report.cgi \
+            ftp://ftp.phytec.de/pub/Software/Linux/Yocto/Tools/phyLinux \
+            "
+
+SANITY_TESTED_DISTROS ?= " \
+            Ubuntu-14.04 \n \
+            "
+
+LAYER_CONF_VERSION ?= "6"
+
+# QA check settings - a little stricter than the OE-Core defaults
+WARN_QA = "textrel files-invalid incompatible-license xorg-driver-abi libdir \
+           unknown-configure-option build-deps"
+ERROR_QA = "dev-so debug-deps dev-deps debug-files arch pkgconfig la perms \
+            useless-rpaths rpaths staticdev ldflags pkgvarcheck already-stripped \
+            compile-host-path dep-cmp installed-vs-shipped install-host-path \
+            packages-list perm-config perm-line perm-link pkgv-undefined \
+            pn-overrides split-strip var-undefined version-going-backwards"
+
+#activate config checker
+INHERIT += "sanity"
+
+#use angstrom source mirrors to combat 404s
+# INHERIT += "phytec-mirrors"
+
+#run QA tests on builds and packages and log them  
+INHERIT += "insane"
+QA_LOG = "1"
+
+# Log information on images and packages
+INHERIT += "buildhistory"
+BUILDHISTORY_COMMIT = "1"
+INHERIT += "buildstats"
+
+# Prelink images
+INHERIT += "image-prelink"
+
+# optimize lib sizes with mklibs
+INHERIT += "image-mklibs"
+
+#run QA tests on recipes
+#INHERIT += "recipe_sanity"
+
+# Prefer libjpeg-turbo
+PREFERRED_PROVIDER_jpeg = "libjpeg-turbo"
+PREFERRED_PROVIDER_jpeg-native = "libjpeg-turbo-native"
+
+PACKAGE_CLASSES ?= "package_ipk"
+
+VIRTUAL-RUNTIME_dev_manager = "udev"
+VIRTUAL-RUNTIME_init_manager = "systemd"
+DISTRO_FEATURES_BACKFILL_CONSIDERED += "sysvinit"
+VIRTUAL-RUNTIME_login_manager = "busybox"
+VIRTUAL-RUNTIME_syslog = ""
+VIRTUAL-RUNTIME_initscripts = ""
+
+# some default locales
+IMAGE_LINGUAS ?= "de-de fr-fr en-us"
+
+# All images build with the distribution get the version package
+IMAGE_INSTALL_append = " os-release"
+PREFERRED_PROVIDER_os-release = "eevo-version"
