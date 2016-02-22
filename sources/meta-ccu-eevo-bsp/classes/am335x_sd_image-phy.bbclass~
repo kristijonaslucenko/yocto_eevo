@@ -251,7 +251,7 @@ populate_boot_part () {
 	copy_kernel_device_trees "${WORKDIR}/${BOOTIMG}"
 
 	case "${PREFERRED_PROVIDER_virtual/bootloader}" in
-	"barebox")
+	"ccu-bootloader")
 		mcopy -i ${WORKDIR}/${BOOTIMG} -s ${DEPLOY_DIR_IMAGE}/barebox.bin ::
 		mcopy -i ${WORKDIR}/${BOOTIMG} -s ${DEPLOY_DIR_IMAGE}/${BAREBOX_IPL_BIN_SYMLINK} ::
 		;;
