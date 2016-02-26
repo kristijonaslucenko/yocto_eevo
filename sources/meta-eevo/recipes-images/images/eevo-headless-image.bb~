@@ -11,5 +11,4 @@ IMAGE_INSTALL = " \
     packagegroup-benchmark \
     packagegroup-userland \
     ${@bb.utils.contains("MACHINE_FEATURES", "alsa", "packagegroup-audio", "", d)} \
-    serial-test \
 "
