@@ -1,0 +1,3 @@
+SANITY_VERSION 1
+TMPDIR /home/kristijonas/yocto_new/build/tmp-glibc
+SSTATE_DIR /home/kristijonas/yocto_new/build/sstate-cache
